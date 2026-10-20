@@ -1,0 +1,11 @@
+# One symbol per line (NSE symbol). Lines starting with # are ignored.
+RELIANCE
+HDFCBANK
+ICICIBANK
+INFY
+TCS
+SBIN
+TATASTEEL
+JSWSTEEL
+LT
+ITC
