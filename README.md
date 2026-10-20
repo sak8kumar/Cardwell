@@ -49,6 +49,14 @@ python cardwell_screener.py     # command-line screener, saves to Excel
 - Yahoo BSE data can have gaps. Symbols that fail to load are listed in the app. You can add ticker overrides in `YAHOO_BSE_OVERRIDES` in `cardwell_screener.py`.
 - NSE sometimes blocks the automated download of the F&O list. If that happens, use a custom symbols file.
 
+## Use on iPad / phone
+
+1. On [share.streamlit.io](https://share.streamlit.io), sign in with GitHub and choose **Create app → Deploy from GitHub**. Pick this repo, branch `main`, and file `app.py`.
+2. Open the app link in Safari and use **Share → Add to Home Screen**.
+3. If "Full NSE F&O list" fails because NSE blocks cloud servers:
+   - open `https://nsearchives.nseindia.com/content/fo/fo_mktlots.csv` in Safari and save it to Files;
+   - in the app, choose **Universe → Custom** and upload that file.
+
 ## Deploy (optional)
 
 [Streamlit Community Cloud](https://streamlit.io/cloud) can host the app for free directly from this repo, with `app.py` as the entry point.

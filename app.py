@@ -46,15 +46,24 @@ st.sidebar.caption("F&O universe · BSE prices (Yahoo .BO)")
 
 src = st.sidebar.radio("Universe", ["Sample (25 large caps)", "Full NSE F&O list", "Custom"])
 if src == "Custom":
-    up = st.sidebar.file_uploader("Symbols file (one per line)", type=["txt", "csv"])
+    up = st.sidebar.file_uploader("Symbols file: one per line, or NSE's fo_mktlots.csv", type=["txt", "csv"])
     txt = st.sidebar.text_area("…or paste symbols", "RELIANCE, TATASTEEL, SBIN")
-    raw = up.read().decode() if up else txt
-    symbols = sorted({s.strip().upper() for s in raw.replace(",", "\n").split() if s.strip()})
+    raw = up.read().decode("utf-8", "ignore") if up else txt
+    first = raw.splitlines()[0].upper() if raw.strip() else ""
+    if "SYMBOL" in first:  # NSE fo_mktlots.csv format
+        df_fo = pd.read_csv(io.StringIO(raw))
+        df_fo.columns = [c.strip().upper() for c in df_fo.columns]
+        cand = df_fo["SYMBOL"].astype(str).str.strip().str.upper()
+    else:
+        cand = [s.strip().upper() for s in raw.replace(",", "\n").split()]
+    symbols = sorted({s for s in cand if s and s != "SYMBOL" and s not in cs.INDEX_SYMBOLS})
 elif src == "Full NSE F&O list":
     try:
         symbols = get_universe_nse()
     except SystemExit as e:
-        st.sidebar.error(str(e))
+        st.sidebar.error("NSE blocked the automatic download. Open nseindia.com/content/fo/fo_mktlots.csv "
+                         "in your browser, save it, then choose Universe → Custom and upload it. "
+                         "Using the 25-stock sample for now.")
         symbols = SAMPLE.split()
 else:
     symbols = SAMPLE.split()
